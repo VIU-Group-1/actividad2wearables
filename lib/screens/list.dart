@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../model/event.dart';
+
 class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
 
@@ -11,7 +13,7 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
-  List<dynamic> events = [];
+  List<Event> events = [];
 
   @override
   void initState() {
@@ -28,8 +30,11 @@ class _ListScreenState extends State<ListScreen> {
       // Comprobar que la respuesta es correcta
       if (response.statusCode == 200) {
         final decodedBody = utf8.decode(response.bodyBytes);
-        events = json.decode(decodedBody);
-        print('${events}');
+        List<dynamic> jsonEvents = json.decode(decodedBody);
+        jsonEvents.forEach((event) {
+          Event.fromJSON(event);
+        });
+        events = jsonEvents.map((event) => Event.fromJSON(event)).toList();
       } else {
         throw Exception("Error al cargar los datos");
       }
@@ -96,12 +101,12 @@ class _ListScreenState extends State<ListScreen> {
                           contentPadding: const EdgeInsets.all(12.0),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(12.0),
-                            child: event["urlImagen"] != null
+                            child: event.urlImagen != null
                                 ? AspectRatio(
                                     aspectRatio:
                                         1, // Mantener proporción cuadrada
                                     child: Image.network(
-                                      event["urlImagen"],
+                                      event.urlImagen,
                                       fit: BoxFit.cover,
                                     ),
                                   )
@@ -117,7 +122,7 @@ class _ListScreenState extends State<ListScreen> {
                                   ),
                           ),
                           title: Text(
-                            event["nombre"],
+                            event.nombre,
                             style: const TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
@@ -126,7 +131,7 @@ class _ListScreenState extends State<ListScreen> {
                           subtitle: Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              "${event["fecha"]} a las ${event["hora"]}",
+                              "${event.fecha} a las ${event.hora}",
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 14.0,
