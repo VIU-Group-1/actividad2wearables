@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:actividad2wearables/screens/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -70,7 +71,12 @@ class _ListScreenState extends State<ListScreen> {
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfileScreen()));
+                },
                 icon: const Icon(Icons.person),
                 color: Colors.white,
                 iconSize: 35,
@@ -101,12 +107,12 @@ class _ListScreenState extends State<ListScreen> {
                           contentPadding: const EdgeInsets.all(12.0),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(12.0),
-                            child: event.urlImagen != null
+                            child: event.urlImage != null
                                 ? AspectRatio(
                                     aspectRatio:
                                         1, // Mantener proporción cuadrada
                                     child: Image.network(
-                                      event.urlImagen,
+                                      event.urlImage,
                                       fit: BoxFit.cover,
                                     ),
                                   )
@@ -122,7 +128,7 @@ class _ListScreenState extends State<ListScreen> {
                                   ),
                           ),
                           title: Text(
-                            event.nombre,
+                            event.name,
                             style: const TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
@@ -131,7 +137,7 @@ class _ListScreenState extends State<ListScreen> {
                           subtitle: Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              "${event.fecha} a las ${event.hora}",
+                              "${event.date} a las ${event.time}",
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 14.0,
