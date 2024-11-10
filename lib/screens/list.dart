@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:actividad2wearables/screens/profile.dart';
+import 'package:actividad2wearables/screens/createEvent.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -156,6 +157,19 @@ class _ListScreenState extends State<ListScreen> {
                       );
                     });
               }
-            }));
+            }),
+        floatingActionButton: FloatingActionButton(
+        onPressed: () {
+        // Navegar a la pantalla de creación de eventos
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CreateEventScreen()),
+        );
+      },
+      backgroundColor: Colors.deepPurple,
+      child: const Icon(Icons.add, color: Colors.white),
+      tooltip: 'Crear nuevo evento',
+      ),
+    );
   }
 }
