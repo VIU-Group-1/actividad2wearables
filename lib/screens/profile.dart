@@ -151,4 +151,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<bool> saveProfile() async {
     return await helper.setProfile(txtName.text, txtImage.text);
   }
+
+  @override
+  void dispose() {
+    txtName.dispose();
+    txtImage.dispose();
+    super.dispose();
+  }
 }
