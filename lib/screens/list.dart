@@ -163,7 +163,7 @@ class _ListScreenState extends State<ListScreen> {
         // Navegar a la pantalla de creación de eventos
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const CreateEventScreen()),
+          MaterialPageRoute(builder: (context) => const CreateEventScreen(null)),
         );
       },
       backgroundColor: Colors.deepPurple,
