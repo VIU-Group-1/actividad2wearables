@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SpHelper {
   static const keyName = 'name';
   static const keyImage = 'image';
+  static const keyFavs = 'favs';
 
   Future<bool> setProfile(String name, String urlImage) async {
     try {
@@ -24,6 +25,40 @@ class SpHelper {
       return Profile(name: name, urlImage: urlImage);
     } on Exception {
       throw Exception('Error recuperando perfil');
+    }
+  }
+
+  Future<List<String>> getFavIds() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final List<String> favorites = prefs.getStringList(keyFavs) ?? [];
+      return favorites;
+    } on Exception {
+      throw Exception('Error recuperando perfil');
+    }
+  }
+
+  Future<bool> addFavorite(String id) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final List<String> favorites = prefs.getStringList(keyFavs) ?? [];
+      favorites.add(id);
+      await prefs.setStringList(keyFavs, favorites);
+      return true;
+    } on Exception {
+      return false;
+    }
+  }
+
+  Future<bool> removeFavorite(String id) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final List<String> favorites = prefs.getStringList(keyFavs) ?? [];
+      favorites.remove(id);
+      await prefs.setStringList(keyFavs, favorites);
+      return true;
+    } on Exception {
+      return false;
     }
   }
 }
