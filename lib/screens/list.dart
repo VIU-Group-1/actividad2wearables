@@ -17,8 +17,10 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   List<Event> events = [];
+  List<Event> oldEvents = [];
 
   List<String> favorites = [];
+  bool onlyFavorites = false;
   final SpHelper helper = SpHelper();
 
   @override
@@ -42,6 +44,10 @@ class _ListScreenState extends State<ListScreen> {
           Event.fromJSON(event);
         });
         events = jsonEvents.map((event) => Event.fromJSON(event)).toList();
+        if (onlyFavorites) {
+          events =
+              events.where((event) => favorites.contains(event.id)).toList();
+        }
       } else {
         throw Exception("Error al cargar los datos");
       }
@@ -55,9 +61,9 @@ class _ListScreenState extends State<ListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Eventos",
-          style: TextStyle(
+        title: Text(
+          'Eventos ${onlyFavorites ? 'favoritos' : ''}',
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 24.0, // Tamaño de texto más grande
             fontWeight: FontWeight.bold, // Hacer el texto más destacado
@@ -74,6 +80,24 @@ class _ListScreenState extends State<ListScreen> {
           ),
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              onPressed: () {
+                if (!onlyFavorites) {
+                  onlyFavorites = true;
+                } else {
+                  onlyFavorites = false;
+                }
+                setState(() {});
+              },
+              icon: onlyFavorites
+                  ? const Icon(Icons.favorite)
+                  : const Icon(Icons.favorite_border_outlined),
+              color: Colors.white,
+              iconSize: 35,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: IconButton(
