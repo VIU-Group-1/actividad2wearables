@@ -121,6 +121,10 @@ class _ListScreenState extends State<ListScreen> {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error ${snapshot.error}'));
+            } else if (!snapshot.hasData && events.isEmpty) {
+              return Center(
+                  child: Text(
+                      'No hay eventos ${onlyFavorites ? 'favoritos' : ''}'));
             } else {
               return ListView.builder(
                   padding: const EdgeInsets.all(8.0),
