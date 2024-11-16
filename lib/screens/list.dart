@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:actividad2wearables/screens/detail_event.dart';
 import 'package:actividad2wearables/screens/profile.dart';
 import 'package:actividad2wearables/screens/createEvent.dart';
 import 'package:flutter/material.dart';
@@ -215,7 +216,11 @@ class _ListScreenState extends State<ListScreen> {
                           ],
                         ),
                         onTap: () {
-                          // Agregar lógica para abrir el detalle del evento
+                          // Al pulsar en el evento mostrar el detalle
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(builder: (context) => DetailEvent(event: event)),
+                          );
                         },
                       ),
                     );
