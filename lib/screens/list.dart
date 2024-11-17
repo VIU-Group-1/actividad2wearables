@@ -270,7 +270,8 @@ class _ListScreenState extends State<ListScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const CreateEventScreen(null)),
+              builder: (context) => CreateEventScreen(event: null),
+            ),
           );
         },
         backgroundColor: Colors.deepPurple,

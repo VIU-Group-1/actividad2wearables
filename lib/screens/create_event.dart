@@ -8,23 +8,16 @@ import 'dart:convert';
 import 'package:actividad2wearables/screens/list.dart';
 
 class CreateEventScreen extends StatefulWidget {
-  final String? id;
-  const CreateEventScreen(this.id, {super.key});
+  final Event? event;
+
+  const CreateEventScreen({this.event, super.key});
 
   @override
   State<CreateEventScreen> createState() => _CreateEventScreenState();
+  
 }
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _fetchEvents();
-  }
-
-  List<Event> events = [];
-  Event? event;
-
   final SpHelper helper = SpHelper();
   final TextEditingController txtName = TextEditingController();
   final TextEditingController txtUrl = TextEditingController();
@@ -34,6 +27,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   final TextEditingController txtCapacity = TextEditingController();
   final TextEditingController txtDuration = TextEditingController();
   final TextEditingController txtSecurityMeasures = TextEditingController();
+
+  void initState() {
+    super.initState();
+
+    if (widget.event != null) {
+      _printEvent(widget.event!);
+    }
+  }
 
   // Método para guardar el evento en Json
   Future<void> createEvent(Event event) async {
@@ -57,6 +58,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       );
 
       if (response.statusCode == 201) {
+        // ignore: avoid_print
         print("Evento creado con éxito en el servidor");
       } else {
         throw Exception("Error al crear el evento en el servidor");
@@ -88,6 +90,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       );
 
       if (response.statusCode == 200) {
+        // ignore: avoid_print
         print("Evento actualizado con éxito en el servidor");
       } else {
         throw Exception("Error al actualizar el evento en el servidor");
@@ -97,47 +100,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     }
   }
 
-  // Método para obtener eventos
-  Future<void> _fetchEvents() async {
-    // JSON Server URL
-    final url = Uri.parse('http://10.0.2.2:3000/eventos');
-    try {
-      final response = await http.get(url);
-      // Comprobar que la respuesta es correcta
-      if (response.statusCode == 200) {
-        final decodedBody = utf8.decode(response.bodyBytes);
-        List<dynamic> jsonEvents = json.decode(decodedBody);
-        for (var event in jsonEvents) {
-          Event.fromJSON(event);
-        }
-        events = jsonEvents.map((event) => Event.fromJSON(event)).toList();
-        if (widget.id != null) _printEvent();
-      } else {
-        throw Exception("Error al cargar los datos");
-      }
-    } catch (e) {
-      throw Exception("Error de conexión");
-    }
-  }
-
   // Método para escribir datos de evento a editar
-  Future<void> _printEvent() async {
-    Event event = events[0];
-
-    for (int i = 0; i < events.length; i++) {
-      if (events[i].id == widget.id) {
-        event = events[i];
-        this.event = event;
-      }
-    }
-    txtName.text = event.name ?? 'Event';
-    txtUrl.text = event.urlImage ??
-        'https://img.freepik.com/fotos-premium/diseno-escenario-evento-vacio-maqueta-e-identidad-corporativa-pantallas-blancas_581196-1.jpg';
-    txtDescription.text = event.description ?? 'Description';
-    txtDate.text = event.date ?? '01/01/2025';
-    txtTime.text = event.time ?? '0:00 AM';
-    txtCapacity.text = event.capacity ?? '0';
-    txtDuration.text = event.duration ?? '0';
+  Future<void> _printEvent(Event event) async {
+    txtName.text = event.name;
+    txtUrl.text = event.urlImage;
+    txtDescription.text = event.description;
+    txtDate.text = event.date;
+    txtTime.text = event.time;
+    txtCapacity.text = event.capacity;
+    txtDuration.text = event.duration;
     List<String> securityMeasures = [event.securityMeasures[0]];
     for (int i = 1; i < event.securityMeasures.length; i++) {
       securityMeasures.add(event.securityMeasures[i].trim().isNotEmpty
@@ -210,7 +181,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       return false;
     }
 
-    if (widget.id == null) {
+    if (widget.event == null) {
       final Event event = Event(
           id: DateTime.now().toString(),
           name: txtName.text,
@@ -232,14 +203,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       createEvent(event);
     } else {
       final Event event = Event(
-          id: widget.id ?? '0',
+          id: widget.event?.id ?? '0',
           name: txtName.text,
           urlImage: txtUrl.text,
           description: txtDescription.text,
           date: txtDate.text,
           time: txtTime.text,
           capacity: txtCapacity.text,
-          actualParticipants: this.event?.actualParticipants ?? '0',
+          actualParticipants: widget.event?.actualParticipants ?? '0',
           duration: txtDuration.text,
           securityMeasures: txtSecurityMeasures.text
               .split(',')
@@ -259,7 +230,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          (widget.id == null) ? "Crear Evento" : "Editar Evento",
+          (widget.event == null) ? "Crear Evento" : "Editar Evento",
           style: const TextStyle(
             color: Colors.white,
             fontSize: 24.0,
@@ -352,7 +323,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               onPressed: () {
                 checkEvent().then((value) {
                   String message = '';
-                  if ((widget.id == null)) {
+                  if ((widget.event == null)) {
                     message = 'Evento creado correctamente';
                   } else {
                     message = 'Evento editado correctamente';
