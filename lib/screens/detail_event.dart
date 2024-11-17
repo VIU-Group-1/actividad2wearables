@@ -12,13 +12,12 @@ class DetailEvent extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           "Información del evento",
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
           ),
         ),
-        
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
         leading: IconButton(
@@ -35,7 +34,6 @@ class DetailEvent extends StatelessWidget {
               end: Alignment.bottomRight,
             ),
           ),
-          
         ),
       ),
       body: SingleChildScrollView(
@@ -43,7 +41,6 @@ class DetailEvent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // Nombre del evento
             Text(
               event.name,
@@ -136,7 +133,7 @@ class DetailEvent extends StatelessWidget {
                     'Medidas de Seguridad:',
                     style: TextStyle(
                       fontSize: 18.0,
-                       fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8.0),
@@ -157,4 +154,3 @@ class DetailEvent extends StatelessWidget {
     );
   }
 }
-

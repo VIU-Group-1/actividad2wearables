@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:actividad2wearables/model/profile.dart';
 import 'package:actividad2wearables/screens/detail_event.dart';
 import 'package:actividad2wearables/screens/profile.dart';
-import 'package:actividad2wearables/screens/createEvent.dart';
+import 'package:actividad2wearables/screens/create_event.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -52,9 +52,9 @@ class _ListScreenState extends State<ListScreen> {
       if (response.statusCode == 200) {
         final decodedBody = utf8.decode(response.bodyBytes);
         List<dynamic> jsonEvents = json.decode(decodedBody);
-        jsonEvents.forEach((event) {
+        for (var event in jsonEvents) {
           Event.fromJSON(event);
-        });
+        }
         events = jsonEvents.map((event) => Event.fromJSON(event)).toList();
         if (onlyFavorites) {
           events =
@@ -64,7 +64,6 @@ class _ListScreenState extends State<ListScreen> {
         throw Exception("Error al cargar los datos");
       }
     } catch (e) {
-      print("Error: $e");
       throw Exception("Error de conexión");
     }
   }
@@ -173,7 +172,7 @@ class _ListScreenState extends State<ListScreen> {
                           contentPadding: const EdgeInsets.all(12.0),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(12.0),
-                            child: event.urlImage != null
+                            child: event.urlImage != ''
                                 ? AspectRatio(
                                     aspectRatio:
                                         1, // Mantener proporción cuadrada
@@ -275,8 +274,8 @@ class _ListScreenState extends State<ListScreen> {
           );
         },
         backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.add, color: Colors.white),
         tooltip: 'Crear nuevo evento',
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

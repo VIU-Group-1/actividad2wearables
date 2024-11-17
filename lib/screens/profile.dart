@@ -149,7 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SnackBar(
                 content: Text(
                   message,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.deepPurple,
                 duration: const Duration(seconds: 2),

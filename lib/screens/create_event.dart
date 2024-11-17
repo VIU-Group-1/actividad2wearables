@@ -16,7 +16,6 @@ class CreateEventScreen extends StatefulWidget {
 }
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -24,7 +23,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   }
 
   List<Event> events = [];
-  Event? event = null;
+  Event? event;
 
   final SpHelper helper = SpHelper();
   final TextEditingController txtName = TextEditingController();
@@ -63,7 +62,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         throw Exception("Error al crear el evento en el servidor");
       }
     } catch (e) {
-      print("Error: $e");
       throw Exception("Error de conexión al servidor");
     }
   }
@@ -95,7 +93,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         throw Exception("Error al actualizar el evento en el servidor");
       }
     } catch (e) {
-      print("Error: $e");
       throw Exception("Error de conexión al servidor");
     }
   }
@@ -110,16 +107,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       if (response.statusCode == 200) {
         final decodedBody = utf8.decode(response.bodyBytes);
         List<dynamic> jsonEvents = json.decode(decodedBody);
-        jsonEvents.forEach((event) {
+        for (var event in jsonEvents) {
           Event.fromJSON(event);
-        });
+        }
         events = jsonEvents.map((event) => Event.fromJSON(event)).toList();
         if (widget.id != null) _printEvent();
       } else {
         throw Exception("Error al cargar los datos");
       }
     } catch (e) {
-      print("Error: $e");
       throw Exception("Error de conexión");
     }
   }
@@ -128,25 +124,26 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   Future<void> _printEvent() async {
     Event event = events[0];
 
-    for (int i = 0; i < events.length; i++)
-    {
-        if (events[i].id == widget.id)
-        {
-            event = events[i];
-            this.event = event;
-        }
+    for (int i = 0; i < events.length; i++) {
+      if (events[i].id == widget.id) {
+        event = events[i];
+        this.event = event;
+      }
     }
     txtName.text = event.name ?? 'Event';
-    txtUrl.text = event.urlImage ?? 'https://img.freepik.com/fotos-premium/diseno-escenario-evento-vacio-maqueta-e-identidad-corporativa-pantallas-blancas_581196-1.jpg';
+    txtUrl.text = event.urlImage ??
+        'https://img.freepik.com/fotos-premium/diseno-escenario-evento-vacio-maqueta-e-identidad-corporativa-pantallas-blancas_581196-1.jpg';
     txtDescription.text = event.description ?? 'Description';
     txtDate.text = event.date ?? '01/01/2025';
     txtTime.text = event.time ?? '0:00 AM';
     txtCapacity.text = event.capacity ?? '0';
     txtDuration.text = event.duration ?? '0';
     List<String> securityMeasures = [event.securityMeasures[0]];
-    for (int i = 1; i < event.securityMeasures.length; i++)
-    {
-      securityMeasures.add(event.securityMeasures[i].trim().isNotEmpty ? event.securityMeasures[i].trim()[0].toLowerCase() + event.securityMeasures[i].trim().substring(1) : event.securityMeasures[i]);
+    for (int i = 1; i < event.securityMeasures.length; i++) {
+      securityMeasures.add(event.securityMeasures[i].trim().isNotEmpty
+          ? event.securityMeasures[i].trim()[0].toLowerCase() +
+              event.securityMeasures[i].trim().substring(1)
+          : event.securityMeasures[i]);
     }
     txtSecurityMeasures.text = securityMeasures.join(', ');
   }
@@ -189,14 +186,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       String newString = regEx.stringMatch(text) ?? "";
       controller.value = TextEditingValue(
         text: newString,
-        selection: TextSelection.collapsed(offset: math.min(newString.length, controller.selection.end)),
+        selection: TextSelection.collapsed(
+            offset: math.min(newString.length, controller.selection.end)),
       );
     }
   }
 
   // Método para comprobar campos rellenos
   Future<bool> checkEvent() async {
-    if (txtName.text.isEmpty || txtUrl.text.isEmpty || txtDescription.text.isEmpty || txtDate.text.isEmpty || txtTime.text.isEmpty || txtCapacity.text.isEmpty || txtDuration.text.isEmpty) {
+    if (txtName.text.isEmpty ||
+        txtUrl.text.isEmpty ||
+        txtDescription.text.isEmpty ||
+        txtDate.text.isEmpty ||
+        txtTime.text.isEmpty ||
+        txtCapacity.text.isEmpty ||
+        txtDuration.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, completa todos los campos obligatorios'),
@@ -206,8 +210,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       return false;
     }
 
-    if (widget.id == null)
-    {
+    if (widget.id == null) {
       final Event event = Event(
           id: DateTime.now().toString(),
           name: txtName.text,
@@ -218,13 +221,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           capacity: txtCapacity.text,
           actualParticipants: '0',
           duration: txtDuration.text,
-          securityMeasures: txtSecurityMeasures.text.split(',').map((measure) =>
-          measure.trim().isNotEmpty? measure.trim()[0].toUpperCase() + measure.trim().substring(1) : measure.trim()).toList());
+          securityMeasures: txtSecurityMeasures.text
+              .split(',')
+              .map((measure) => measure.trim().isNotEmpty
+                  ? measure.trim()[0].toUpperCase() +
+                      measure.trim().substring(1)
+                  : measure.trim())
+              .toList());
 
       createEvent(event);
-    }
-    else
-    {
+    } else {
       final Event event = Event(
           id: widget.id ?? '0',
           name: txtName.text,
@@ -235,8 +241,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           capacity: txtCapacity.text,
           actualParticipants: this.event?.actualParticipants ?? '0',
           duration: txtDuration.text,
-          securityMeasures: txtSecurityMeasures.text.split(',').map((measure) =>
-          measure.trim().isNotEmpty? measure.trim()[0].toUpperCase() + measure.trim().substring(1) : measure.trim()).toList());
+          securityMeasures: txtSecurityMeasures.text
+              .split(',')
+              .map((measure) => measure.trim().isNotEmpty
+                  ? measure.trim()[0].toUpperCase() +
+                      measure.trim().substring(1)
+                  : measure.trim())
+              .toList());
 
       updateEvent(event);
     }
@@ -249,7 +260,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       appBar: AppBar(
         title: Text(
           (widget.id == null) ? "Crear Evento" : "Editar Evento",
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
@@ -273,95 +284,107 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           children: [
             const SizedBox(height: 24.0),
             TextField(
-              controller: txtName,
-              decoration: const InputDecoration(labelText: 'Nombre', border: OutlineInputBorder()),
-              inputFormatters: [LengthLimitingTextInputFormatter(35)]
-            ),
+                controller: txtName,
+                decoration: const InputDecoration(
+                    labelText: 'Nombre', border: OutlineInputBorder()),
+                inputFormatters: [LengthLimitingTextInputFormatter(35)]),
             const SizedBox(height: 24.0),
             TextField(
-              controller: txtUrl,
-              decoration: const InputDecoration(labelText: 'URL de imagen', border: OutlineInputBorder()),
-              inputFormatters: [LengthLimitingTextInputFormatter(250)]
-            ),
+                controller: txtUrl,
+                decoration: const InputDecoration(
+                    labelText: 'URL de imagen', border: OutlineInputBorder()),
+                inputFormatters: [LengthLimitingTextInputFormatter(250)]),
             const SizedBox(height: 24.0),
             TextField(
               controller: txtDescription,
-              decoration: const InputDecoration(labelText: 'Descripción', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Descripción', border: OutlineInputBorder()),
               maxLines: 2,
               inputFormatters: [LengthLimitingTextInputFormatter(115)],
               onChanged: (text) => noNewLine(text, txtDescription),
             ),
             const SizedBox(height: 24.0),
             TextField(
-              controller: txtDate,
-              readOnly: true,
-              decoration: const InputDecoration(labelText: 'Fecha', border: OutlineInputBorder()),
-              onTap: () => _selectDate(context)
-            ),
+                controller: txtDate,
+                readOnly: true,
+                decoration: const InputDecoration(
+                    labelText: 'Fecha', border: OutlineInputBorder()),
+                onTap: () => _selectDate(context)),
             const SizedBox(height: 24.0),
             TextField(
-              controller: txtTime,
-              readOnly: true,
-              decoration: const InputDecoration(labelText: 'Hora', border: OutlineInputBorder()),
-              onTap: () => _selectTime(context)
-            ),
+                controller: txtTime,
+                readOnly: true,
+                decoration: const InputDecoration(
+                    labelText: 'Hora', border: OutlineInputBorder()),
+                onTap: () => _selectTime(context)),
             const SizedBox(height: 24.0),
             TextField(
-              controller: txtCapacity,
-              decoration: const InputDecoration(labelText: 'Capacidad', border: OutlineInputBorder()),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)]
-            ),
+                controller: txtCapacity,
+                decoration: const InputDecoration(
+                    labelText: 'Capacidad', border: OutlineInputBorder()),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6)
+                ]),
             const SizedBox(height: 24.0),
             TextField(
-              controller: txtDuration,
-              decoration: const InputDecoration(labelText: 'Duración (horas)', border: OutlineInputBorder()),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)]
-            ),
+                controller: txtDuration,
+                decoration: const InputDecoration(
+                    labelText: 'Duración (horas)',
+                    border: OutlineInputBorder()),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(2)
+                ]),
             const SizedBox(height: 24.0),
             TextField(
-              controller: txtSecurityMeasures,
-              decoration: const InputDecoration(labelText: 'Medidas de seguridad (separadas por ",")', border: OutlineInputBorder()),
-              maxLines: 2,
-              inputFormatters: [LengthLimitingTextInputFormatter(115)],
-              onChanged: (text) => noNewLine(text, txtSecurityMeasures)
-            ),
+                controller: txtSecurityMeasures,
+                decoration: const InputDecoration(
+                    labelText: 'Medidas de seguridad (separadas por ",")',
+                    border: OutlineInputBorder()),
+                maxLines: 2,
+                inputFormatters: [LengthLimitingTextInputFormatter(115)],
+                onChanged: (text) => noNewLine(text, txtSecurityMeasures)),
             const SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
                 checkEvent().then((value) {
-
                   String message = '';
-                  if ((widget.id == null)) message = 'Evento creado correctamente';
-                  else message = 'Evento editado correctamente';
+                  if ((widget.id == null)) {
+                    message = 'Evento creado correctamente';
+                  } else {
+                    message = 'Evento editado correctamente';
+                  }
 
-                  if (value)
-                    {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            message,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Colors.deepPurple,
-                          duration: const Duration(seconds: 2),
+                  if (value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          message,
+                          style: TextStyle(color: Colors.white),
                         ),
-                      );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ListScreen()),
-                      );
-                    }
+                        backgroundColor: Colors.deepPurple,
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ListScreen()),
+                    );
+                  }
 
                   setState(() {});
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))
-              ),
+                  backgroundColor: Colors.deepPurple,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 24.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0))),
               child: const Text(
                 'Guardar',
                 style: TextStyle(
@@ -374,7 +397,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           ],
         ),
       ),
-
     );
   }
 }
