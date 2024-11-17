@@ -4,13 +4,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SpHelper {
   static const keyName = 'name';
   static const keyImage = 'image';
+  static const keyGender = 'male';
   static const keyFavs = 'favs';
 
-  Future<bool> setProfile(String name, String urlImage) async {
+  Future<bool> setProfile(String name, String urlImage, String gender) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString(keyName, name);
       await prefs.setString(keyImage, urlImage);
+      await prefs.setString(keyGender, gender);
       return true;
     } on Exception {
       return false;
@@ -22,7 +24,8 @@ class SpHelper {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String name = prefs.getString(keyName) ?? '';
       final String urlImage = prefs.getString(keyImage) ?? '';
-      return Profile(name: name, urlImage: urlImage);
+      final String gender = prefs.getString(keyGender) ?? '';
+      return Profile(name: name, urlImage: urlImage, gender: gender);
     } on Exception {
       throw Exception('Error recuperando perfil');
     }
