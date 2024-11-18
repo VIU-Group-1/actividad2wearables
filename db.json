@@ -7,8 +7,8 @@
       "descripcion": "Un festival de música al aire libre con bandas locales e internacionales.",
       "fecha": "07/10/2024",
       "hora": "18:00",
-      "capacidad": 500,
-      "genteApuntada": 200,
+      "capacidad": "500",
+      "genteApuntada": "200",
       "duracion": "6",
       "medidasSeguridad": [
         "Desinfección de áreas comunes",
@@ -16,9 +16,9 @@
         "Uso obligatorio de mascarillas"
       ],
       "valoracion": {
-        "textoValoracion": "",
-        "volverAsistir": false,
-        "estrellas": 0
+        "textoValoracion": "Maravilloso.",
+        "volverAsistir": true,
+        "estrellas": 5
       }
     },
     {

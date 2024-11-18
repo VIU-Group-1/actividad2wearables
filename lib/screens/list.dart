@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:actividad2wearables/model/profile.dart';
+import 'package:actividad2wearables/model/rating.dart';
 import 'package:actividad2wearables/screens/detail_event.dart';
 import 'package:actividad2wearables/screens/profile.dart';
 import 'package:actividad2wearables/screens/create_event.dart';
+import 'package:actividad2wearables/screens/rating_event.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -236,6 +238,22 @@ class _ListScreenState extends State<ListScreen> {
                                   );
                                 },
                               ),
+                              // Valorar el evento
+                              IconButton(
+                                icon: Icon(
+                                  Icons.comment, 
+                                  color: Colors.deepPurple, 
+                                  size: 30
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RatingEventScreen(event: event),
+                                    ),
+                                  );
+                                },
+                              ),
                               //Indicar favorito
                               IconButton(
                                 icon: Icon(
@@ -263,6 +281,8 @@ class _ListScreenState extends State<ListScreen> {
                                   });
                                 },
                               ),
+                              
+                                                            //                            
                               Icon(
                                 Icons.arrow_forward_ios,
                                 size: 18.0,

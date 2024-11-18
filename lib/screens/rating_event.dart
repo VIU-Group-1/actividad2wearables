@@ -108,6 +108,12 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -203,7 +209,7 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
                           duration: const Duration(seconds: 2),
                         ),
                       ).closed.then((_) { // Espera a que termine el SnackBar
-                        Navigator.push(
+                        Navigator.pop(
                           context,
                           MaterialPageRoute(builder: (context) => const ListScreen()),
                         );
