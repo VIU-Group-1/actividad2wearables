@@ -83,6 +83,44 @@
         "volverAsistir": false,
         "estrellas": 0
       }
+    },
+    {
+      "id": "2024-11-18 21:46:27.121616",
+      "nombre": "Evento de prueba",
+      "urlImagen": "https://millennialsconsulting.es/wp-content/uploads/2018/05/brunchempresarial.jpg",
+      "descripcion": "Degustacin de comida europea",
+      "fecha": "20/11/2024",
+      "hora": "19:46",
+      "capacidad": "25",
+      "genteApuntada": "0",
+      "duracion": "1",
+      "medidasSeguridad": [
+        ""
+      ],
+      "valoracion": {
+        "textoValoracion": "",
+        "volverAsistir": false,
+        "estrellas": 0
+      }
+    },
+    {
+      "id": "2024-11-18 21:49:57.520252",
+      "nombre": "Evento de prueba",
+      "urlImagen": "https://millennialsconsulting.es/wp-content/uploads/2018/05/brunchempresarial.jpg",
+      "descripcion": "Probando a crear un evento nuevo",
+      "fecha": "20/11/2024",
+      "hora": "18:49",
+      "capacidad": "25",
+      "genteApuntada": "0",
+      "duracion": "1",
+      "medidasSeguridad": [
+        "Ninguna"
+      ],
+      "valoracion": {
+        "textoValoracion": "",
+        "volverAsistir": false,
+        "estrellas": 0
+      }
     }
   ]
 }

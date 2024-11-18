@@ -81,6 +81,12 @@ class _ListScreenState extends State<ListScreen> {
           ),
         ),
         backgroundColor: Colors.deepPurple,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -213,6 +219,24 @@ class _ListScreenState extends State<ListScreen> {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              // Botón de edición
+                              IconButton(
+                                icon: Icon(
+                                  Icons.edit,
+                                  size: 30.0,
+                                  color: Colors.deepPurple[300], 
+                                ),
+                                onPressed: () {
+                                  // Editar evento
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CreateEventScreen(event: event), 
+                                    ),
+                                  );
+                                },
+                              ),
+                              //Indicar favorito
                               IconButton(
                                 icon: Icon(
                                   favorites.contains(event.id)
