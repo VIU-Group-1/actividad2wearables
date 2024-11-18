@@ -1,10 +1,13 @@
 import 'package:actividad2wearables/data/sp_helper.dart';
+import 'package:actividad2wearables/model/rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:actividad2wearables/model/event.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:math' as math;
 import 'package:actividad2wearables/screens/list.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RatingEventScreen extends StatefulWidget {
   final Event event;
@@ -19,12 +22,43 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
   final SpHelper helper = SpHelper();
   final TextEditingController txtRatingController = TextEditingController();
   bool wouldAttendAgain = false;
-  double rating = 0;
+  double rating = 0.0;
+
+  // Método para guardar la valoración en Json
+  Future<void> createRating(Rating rating) async {
+    final url = Uri.parse('http://10.0.2.2:3000/eventos/${widget.event.id}');
+    try {
+      final response = await http.put(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          "id": widget.event.id,
+          "nombre": widget.event.name,
+          "urlImagen": widget.event.urlImage,
+          "descripcion": widget.event.description,
+          "fecha": widget.event.date,
+          "hora": widget.event.time,
+          "capacidad": widget.event.capacity,
+          "genteApuntada": widget.event.actualParticipants,
+          "duracion": widget.event.duration,
+          "medidasSeguridad": widget.event.securityMeasures,
+          "valoracion": rating,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // ignore: avoid_print
+        print("Evento valorado con éxito en el servidor");
+      } else {
+        throw Exception("Error al valorar el evento en el servidor");
+      }
+    } catch (e) {
+      throw Exception("Error de conexión al servidor");
+    }
+  }
 
   // Valorar
   Future<bool> acceptRating() async {
-    print(txtRatingController.text);
-    print(rating);
     if (txtRatingController.text.isEmpty ||
         rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -35,7 +69,14 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
       );
       return false;
     }
-    print("Valorar");
+
+    final Rating newRating = Rating(
+        text: txtRatingController.text,
+        wouldAttendAgain: wouldAttendAgain,
+        rating: rating
+    );
+
+    createRating(newRating);
     return true;
   }
 

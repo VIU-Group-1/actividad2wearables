@@ -1,4 +1,5 @@
 import 'package:actividad2wearables/data/sp_helper.dart';
+import 'package:actividad2wearables/model/rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
@@ -54,6 +55,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           "genteApuntada": event.actualParticipants,
           "duracion": event.duration,
           "medidasSeguridad": event.securityMeasures,
+          "valoracion": event.rating.toJson(),
         }),
       );
 
@@ -86,6 +88,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           "genteApuntada": event.actualParticipants,
           "duracion": event.duration,
           "medidasSeguridad": event.securityMeasures,
+          "valoracion": event.rating,
         }),
       );
 
@@ -181,6 +184,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       return false;
     }
 
+    final Rating newRating = Rating(
+        text: "",
+        wouldAttendAgain: false,
+        rating: 0.0
+    );
+
     if (widget.event == null) {
       final Event event = Event(
           id: DateTime.now().toString(),
@@ -198,7 +207,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ? measure.trim()[0].toUpperCase() +
                       measure.trim().substring(1)
                   : measure.trim())
-              .toList());
+              .toList(),
+          rating: newRating);
 
       createEvent(event);
     } else {
@@ -218,7 +228,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ? measure.trim()[0].toUpperCase() +
                       measure.trim().substring(1)
                   : measure.trim())
-              .toList());
+              .toList(),
+          rating: widget.event?.rating ?? newRating);
 
       updateEvent(event);
     }

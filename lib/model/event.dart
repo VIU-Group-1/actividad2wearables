@@ -1,3 +1,5 @@
+import 'package:actividad2wearables/model/rating.dart';
+
 class Event {
   final String id;
   final String name;
@@ -9,6 +11,7 @@ class Event {
   final String actualParticipants;
   final String duration;
   final List<String> securityMeasures;
+  final Rating rating;
 
   Event({
     required this.id,
@@ -21,10 +24,11 @@ class Event {
     required this.actualParticipants,
     required this.duration,
     required this.securityMeasures,
+    required this.rating,
   });
 
   Event.fromJSON(Map<String, dynamic> map)
-      : id = map['id'].toString(), // Convertir todos los valores a String
+      : id = map['id'].toString(),
         name = map['nombre'].toString(),
         urlImage = map['urlImagen'].toString(),
         description = map['descripcion'].toString(),
@@ -36,5 +40,6 @@ class Event {
         securityMeasures = map['medidasSeguridad'] != null
             ? List<String>.from(
                 map['medidasSeguridad'].map((x) => x.toString()))
-            : [];
+            : [],
+        rating = Rating.fromJSON(map['valoracion']);
 }
