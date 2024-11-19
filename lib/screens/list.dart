@@ -307,15 +307,18 @@ class _ListScreenState extends State<ListScreen> {
                                         size: 30.0,
                                         color: Colors.deepPurple[300],
                                       ),
-                                      onPressed: () {
-                                        // Editar evento
-                                        Navigator.push(
+                                      onPressed: () async {
+                                        // Navegar a la pantalla de creación de eventos
+                                        final result = await Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 CreateEventScreen(event: event),
                                           ),
                                         );
+                                        if (result) {
+                                          setState(() {});
+                                        }
                                       },
                                     ),
                                     // Valorar el evento
@@ -393,14 +396,18 @@ class _ListScreenState extends State<ListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           // Navegar a la pantalla de creación de eventos
-          Navigator.push(
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CreateEventScreen(event: null),
+              builder: (context) =>
+                  CreateEventScreen(event: null),
             ),
           );
+          if (result) {
+            setState(() {});
+          }
         },
         backgroundColor: Colors.deepPurple,
         tooltip: 'Crear nuevo evento',

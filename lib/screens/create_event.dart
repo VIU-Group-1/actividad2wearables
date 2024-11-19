@@ -357,11 +357,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         duration: const Duration(seconds: 2),
                       ),
                     );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ListScreen()),
-                    );
+                    Navigator.pop(context, true);
                   }
 
                   setState(() {});
