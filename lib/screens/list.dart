@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:actividad2wearables/model/profile.dart';
-import 'package:actividad2wearables/model/rating.dart';
 import 'package:actividad2wearables/screens/detail_event.dart';
 import 'package:actividad2wearables/screens/profile.dart';
 import 'package:actividad2wearables/screens/create_event.dart';
@@ -25,6 +24,7 @@ class _ListScreenState extends State<ListScreen> {
 
   List<String> favorites = [];
   bool onlyFavorites = false;
+  bool onlyRated = false;
   String? gender;
   String name = 'Guest';
   final SpHelper helper = SpHelper();
@@ -62,6 +62,13 @@ class _ListScreenState extends State<ListScreen> {
           events =
               events.where((event) => favorites.contains(event.id)).toList();
         }
+
+        if (onlyRated) {
+          events = events.where((event) => event.rated).toList();
+        }
+        if (!onlyRated) {
+          events = events.where((event) => !event.rated).toList();
+        }
       } else {
         throw Exception("Error al cargar los datos");
       }
@@ -83,12 +90,6 @@ class _ListScreenState extends State<ListScreen> {
           ),
         ),
         backgroundColor: Colors.deepPurple,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -150,6 +151,41 @@ class _ListScreenState extends State<ListScreen> {
               textAlign: TextAlign.center,
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ToggleButtons(
+                  isSelected: [!onlyRated, onlyRated],
+                  onPressed: (index) {
+                    onlyRated = index == 1;
+                    setState(() {});
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  selectedColor: Colors.white,
+                  fillColor: Colors.deepPurple,
+                  color: Colors.deepPurple,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Sin calificar',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Solo calificados',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: FutureBuilder(
               future: _fetchEventos(),
@@ -161,7 +197,7 @@ class _ListScreenState extends State<ListScreen> {
                 } else if (!snapshot.hasData && events.isEmpty) {
                   return Center(
                     child: Text(
-                      'No hay eventos ${onlyFavorites ? 'favoritos' : ''}',
+                      'No hay eventos ${onlyFavorites ? 'para mostrar' : ''}',
                     ),
                   );
                 } else {
@@ -173,6 +209,9 @@ class _ListScreenState extends State<ListScreen> {
                       return Card(
                         elevation: 4.0,
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        color: event.rated
+                            ? Colors.white.withOpacity(0.4)
+                            : Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
                         ),
@@ -220,75 +259,120 @@ class _ListScreenState extends State<ListScreen> {
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Botón de edición
-                              IconButton(
-                                icon: Icon(
-                                  Icons.edit,
-                                  size: 30.0,
-                                  color: Colors.deepPurple[300], 
-                                ),
-                                onPressed: () {
-                                  // Editar evento
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => CreateEventScreen(event: event), 
-                                    ),
-                                  );
-                                },
-                              ),
-                              // Valorar el evento
-                              IconButton(
-                                icon: Icon(
-                                  Icons.comment, 
-                                  color: Colors.deepPurple, 
-                                  size: 30
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => RatingEventScreen(event: event),
-                                    ),
-                                  );
-                                },
-                              ),
-                              //Indicar favorito
-                              IconButton(
-                                icon: Icon(
-                                  favorites.contains(event.id)
-                                      ? Icons.favorite
-                                      : Icons.favorite_border_outlined,
-                                  size: 30.0,
-                                  color: Colors.deepPurple[300],
-                                ),
-                                onPressed: () {
-                                  saveFavorites(event.id).then((value) {
-                                    String message = value;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          message,
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                        backgroundColor: Colors.deepPurple,
-                                        duration: const Duration(seconds: 1),
+                            children: event.rated == true
+                                ? [
+                                    //Indicar favorito
+                                    IconButton(
+                                      icon: Icon(
+                                        favorites.contains(event.id)
+                                            ? Icons.favorite
+                                            : Icons.favorite_border_outlined,
+                                        size: 30.0,
+                                        color: Colors.deepPurple[300],
                                       ),
-                                    );
-                                    setState(() {});
-                                  });
-                                },
-                              ),
-                              
-                                                            //                            
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                size: 18.0,
-                                color: Colors.deepPurple[300],
-                              ),
-                            ],
+                                      onPressed: () {
+                                        saveFavorites(event.id).then((value) {
+                                          String message = value;
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                message,
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              backgroundColor:
+                                                  Colors.deepPurple,
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                            ),
+                                          );
+                                          setState(() {});
+                                        });
+                                      },
+                                    ),
+
+                                    //
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 18.0,
+                                      color: Colors.deepPurple[300],
+                                    ),
+                                  ]
+                                : [
+                                    // Botón de edición
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.edit,
+                                        size: 30.0,
+                                        color: Colors.deepPurple[300],
+                                      ),
+                                      onPressed: () {
+                                        // Editar evento
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CreateEventScreen(event: event),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    // Valorar el evento
+                                    IconButton(
+                                      icon: const Icon(Icons.comment,
+                                          color: Colors.deepPurple, size: 30),
+                                      onPressed: () async {
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RatingEventScreen(event: event),
+                                          ),
+                                        );
+                                        if (result) {
+                                          setState(() {});
+                                        }
+                                      },
+                                    ),
+                                    //Indicar favorito
+                                    IconButton(
+                                      icon: Icon(
+                                        favorites.contains(event.id)
+                                            ? Icons.favorite
+                                            : Icons.favorite_border_outlined,
+                                        size: 30.0,
+                                        color: Colors.deepPurple[300],
+                                      ),
+                                      onPressed: () {
+                                        saveFavorites(event.id).then((value) {
+                                          String message = value;
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                message,
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              backgroundColor:
+                                                  Colors.deepPurple,
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                            ),
+                                          );
+                                          setState(() {});
+                                        });
+                                      },
+                                    ),
+
+                                    //
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 18.0,
+                                      color: Colors.deepPurple[300],
+                                    ),
+                                  ],
                           ),
                           onTap: () {
                             Navigator.push(
@@ -314,7 +398,7 @@ class _ListScreenState extends State<ListScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CreateEventScreen(event: null),
+              builder: (context) => const CreateEventScreen(event: null),
             ),
           );
         },

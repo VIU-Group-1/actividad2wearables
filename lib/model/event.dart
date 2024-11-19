@@ -12,6 +12,7 @@ class Event {
   final String duration;
   final List<String> securityMeasures;
   final Rating rating;
+  bool rated = false;
 
   Event({
     required this.id,
@@ -41,5 +42,6 @@ class Event {
             ? List<String>.from(
                 map['medidasSeguridad'].map((x) => x.toString()))
             : [],
+        rated = map['valorado'] ?? false,
         rating = Rating.fromJSON(map['valoracion']);
 }

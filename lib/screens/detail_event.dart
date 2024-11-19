@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../model/event.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class DetailEvent extends StatelessWidget {
   final Event event;
@@ -148,6 +149,45 @@ class DetailEvent extends StatelessWidget {
                   }),
                 ],
               ),
+            const SizedBox(height: 16.0),
+            if (event.rated)
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Valoración del evento:',
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                const SizedBox(
+                  height: 8.0,
+                ),
+                RatingBarIndicator(
+                  rating: event.rating.rating.toDouble(),
+                  itemBuilder: (context, index) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  itemCount: 5,
+                  itemSize: 30.0,
+                  direction: Axis.horizontal,
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  event.rating.text,
+                  style: const TextStyle(fontSize: 16.0),
+                ),
+                const SizedBox(
+                  height: 8.0,
+                ),
+                Row(
+                  children: [
+                    const Text(
+                      'Volvere a asistir: ',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Icon(event.rating.wouldAttendAgain
+                        ? (Icons.check)
+                        : (Icons.close))
+                  ],
+                )
+              ])
           ],
         ),
       ),

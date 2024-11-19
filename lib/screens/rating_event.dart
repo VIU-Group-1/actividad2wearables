@@ -1,11 +1,9 @@
 import 'package:actividad2wearables/data/sp_helper.dart';
 import 'package:actividad2wearables/model/rating.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:actividad2wearables/model/event.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:math' as math;
-import 'package:actividad2wearables/screens/list.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -28,6 +26,9 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
   Future<void> createRating(Rating rating) async {
     final url = Uri.parse('http://10.0.2.2:3000/eventos/${widget.event.id}');
     try {
+      setState(() {
+        widget.event.rated = true;
+      });
       final response = await http.put(
         url,
         headers: {"Content-Type": "application/json"},
@@ -43,6 +44,7 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
           "duracion": widget.event.duration,
           "medidasSeguridad": widget.event.securityMeasures,
           "valoracion": rating,
+          "valorado": widget.event.rated
         }),
       );
 
@@ -59,8 +61,7 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
 
   // Valorar
   Future<bool> acceptRating() async {
-    if (txtRatingController.text.isEmpty ||
-        rating == 0) {
+    if (txtRatingController.text.isEmpty || rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, completa todos los campos obligatorios'),
@@ -73,8 +74,7 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
     final Rating newRating = Rating(
         text: txtRatingController.text,
         wouldAttendAgain: wouldAttendAgain,
-        rating: rating
-    );
+        rating: rating);
 
     createRating(newRating);
     return true;
@@ -98,9 +98,9 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Valora el evento",
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
@@ -148,8 +148,9 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
               controller: txtRatingController,
               maxLength: 100,
               maxLines: 3,
-                decoration: const InputDecoration(
-                    hintText: 'Escribe tu opinión aquí...', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  hintText: 'Escribe tu opinión aquí...',
+                  border: OutlineInputBorder()),
               onChanged: (text) => noNewLine(text, txtRatingController),
             ),
             SizedBox(height: 16),
@@ -208,21 +209,17 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
                           backgroundColor: Colors.deepPurple,
                           duration: const Duration(seconds: 2),
                         ),
-                      ).closed.then((_) { // Espera a que termine el SnackBar
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ListScreen()),
-                        );
-                      });
+                      );
+                      Navigator.pop(context, true);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text(
                             'Error al valorar el evento',
                             style: TextStyle(color: Colors.white),
                           ),
                           backgroundColor: Colors.red,
-                          duration: const Duration(seconds: 2),
+                          duration: Duration(seconds: 2),
                         ),
                       );
                     }
@@ -242,7 +239,8 @@ class _RatingEventScreenState extends State<RatingEventScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
-                  padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 24.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
