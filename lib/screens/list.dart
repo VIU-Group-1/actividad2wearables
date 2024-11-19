@@ -100,6 +100,7 @@ class _ListScreenState extends State<ListScreen> {
           ),
         ),
         actions: [
+          // Icono para seleccionar eventos a mostrar: favoritos o no favoritos
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
@@ -118,6 +119,7 @@ class _ListScreenState extends State<ListScreen> {
               iconSize: 35,
             ),
           ),
+          // Perfil del usuario
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: IconButton(
@@ -141,6 +143,7 @@ class _ListScreenState extends State<ListScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
+            // Mostrar según el género del usuario la bienvenida
             child: Text(
               '¡${gender == 'Hombre' ? 'Bienvenido' : gender == 'Mujer' ? 'Bienvenida' : 'Bienvenid@'}${name.isNotEmpty ? ', $name' : 'Guest'}!',
               style: const TextStyle(
@@ -151,6 +154,7 @@ class _ListScreenState extends State<ListScreen> {
               textAlign: TextAlign.center,
             ),
           ),
+          // Seleccionar eventos sin calificar o sólo calificados
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
@@ -186,6 +190,7 @@ class _ListScreenState extends State<ListScreen> {
               ],
             ),
           ),
+          // Lista de eventos
           Expanded(
             child: FutureBuilder(
               future: _fetchEventos(),

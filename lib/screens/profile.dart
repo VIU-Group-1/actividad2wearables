@@ -25,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     txtName.text = profile.name;
     txtImage.text = profile.urlImage;
     txtGender.text = profile.gender;
+    // Inicializar con nombre, género e imagen el perfil de usuario
     txtName.text = profile.name == '' ? 'Guest' : profile.name;
     txtImage.text = profile.urlImage == ''
         ? 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
@@ -128,6 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
+          // Seleccionar género
           Align(
               alignment: Alignment.centerLeft,
               child: DropdownMenu(

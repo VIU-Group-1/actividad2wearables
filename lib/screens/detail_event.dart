@@ -150,6 +150,7 @@ class DetailEvent extends StatelessWidget {
                 ],
               ),
             const SizedBox(height: 16.0),
+            // Valoración
             if (event.rated)
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Text('Valoración del evento:',
